@@ -3,6 +3,6 @@
     "uid": "app",
     "append": true,
     "watch": true,
-    "script": "app.js",
+    "script": "bin/www",
     "sourceDir": "/home/ubuntu/autofit"
 }
