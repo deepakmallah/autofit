@@ -2,4 +2,23 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+
+  div
+    form(action='/generate',method='post')
+      div(data-role='fieldcontain')
+        label(for='text') Enter String here
+           input(id='str',type='text',value='',name='str', required)
+      div(data-role='fieldcontain')
+        input(type='submit',value='Click to Fit',data-transition='fade', data-theme='c')
+
+      br
+      br
+      h3 Processed Image
+      br
+      img(src='/images/resulted_file.jpg')
+      br
+      br
+      br
+      h3 Default Image
+      br
+      img(src='/images/default.jpg')
