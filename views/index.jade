@@ -3,22 +3,18 @@ extends layout
 block content
   h1= title
 
-  div
+  div(class='form-group row')
     form(action='/generate',method='post')
-      div(data-role='fieldcontain')
+      div
         label(for='text') Enter String here
            input(id='str',type='text',value='',name='str', required)
-      div(data-role='fieldcontain')
-        input(type='submit',value='Click to Fit',data-transition='fade', data-theme='c')
+      div(class='col-md-1')
+        input(type='submit',value='Click to Fit', class='btn btn-primary')
 
-      br
-      br
+  div(class='row')
+    div(class='col-md-6')
       h3 Processed Image
-      br
       img(src='/images/resulted_file.jpg')
-      br
-      br
-      br
+    div(class='col-md-6')
       h3 Default Image
-      br
       img(src='/images/default.jpg')

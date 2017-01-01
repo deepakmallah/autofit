@@ -32,6 +32,8 @@ router.post('/generate', function(req, res, next) {
         console.log(err)
         next();
       });
+  }else{
+    return res.redirect('/');
   }
 });
 
