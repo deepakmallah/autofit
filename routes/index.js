@@ -4,15 +4,16 @@ var router = express.Router();
 var path = require('path');
 var fs = require('fs');
 var gm = require('gm').subClass({ imageMagick: true });
-var currentTimeStamp = Math.floor(new Date() / 1000);
+var request = require('request');
 var im = require('imagemagick');
 var _dir = "public/images/";
 var name = null;
 var baseImage = "public/images/default.jpg";
-var finalImage = _dir+'resulted_file.jpg'
+var finalImage = _dir+'resulted_file.jpg';
+var tmpImg = null;
 
 /**
- * ////return new Promise(function(resolve, reject){
+ * Reference
  * //gm(request(url))
  * //http://aheckmann.github.io/gm/docs.html
  */
@@ -22,9 +23,13 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: "Autofit Text in the Box", img: finalImage});
 });
 
+/**
+ * Post method which invokes processing after form submission
+ */
 router.post('/generate', function(req, res, next) {
+  tmpImg = null;
   if(req && req.body){
-    generateImg(req.body.str)
+    generateImg(req.body.str, req.body)
       .then(function(err, response){
         return res.redirect('/');
       })
@@ -67,6 +72,7 @@ var textInBox = function(str){
         var fileName = _dir+this.name+'.png';
         var args = [
           '-border','1%x1%',
+          '-bordercolor', 'red',
           //'-strokewidth','1',
           //'-stroke','black',
           '-background','none',
@@ -92,19 +98,31 @@ var textInBox = function(str){
   });
 };
 
+/**
+ * Merges two images (boxed and base image)
+ * @param boxedImg
+ * @returns {Promise}
+ */
 var mergeImage = function(boxedImg){
   return new Promise(function(resolve, reject){
+
+    var tmp = baseImage;
+    if(tmpImg){
+      tmp = tmpImg;
+    }
+
     try{
       gm()
         .command("composite")
         .in("-geometry", "+100+100")
         .in(path.resolve(boxedImg))
-        .in(path.resolve(baseImage))
+        .in(path.resolve(tmp))
         .write(path.resolve(finalImage), function (err) {
           if (err)
             return reject({error: true, msg: err});
           else
             fs.unlink(boxedImg);
+            fs.unlink(tmpImg);
             return resolve(finalImage);
         });
     }catch (err){
@@ -113,9 +131,39 @@ var mergeImage = function(boxedImg){
   });
 };
 
-var generateImg = function(str){
+/**
+ * Pulls image from Url and create a tmp image
+ * @param str
+ * @param body
+ * @returns {Promise}
+ */
+var getImg = function(str, body){
   return new Promise(function(resolve, reject){
-    getName(str)
+    if(body.url){
+      var url = body.url;
+      gm(request(url))
+        .resize("800", "420", "!")
+        .write(path.resolve(_dir+"tmp.jpg"), function (err) {
+          if (!err) console.log('done');
+          tmpImg = path.resolve(_dir+"tmp.jpg");
+          return resolve(str);
+        });
+    }else{
+      return resolve(str);
+    }
+  });
+}
+
+/**
+ * Master function
+ * @param str
+ * @param body
+ * @returns {Promise}
+ */
+var generateImg = function(str, body){
+  return new Promise(function(resolve, reject){
+    getImg(str, body)
+      .then(getName)
       .then(textInBox)
       .then(mergeImage)
       .then(function(err, res){

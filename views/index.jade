@@ -7,7 +7,9 @@ block content
     form(action='/generate',method='post')
       div
         label(for='text') Enter String here
-           input(id='str',type='text',value='',name='str', required)
+            input(id='str',type='text',value='',name='str', required)
+        label(for='text') Enter Image Url (for example : http://www.gstatic.com/tv/thumb/tvbanners/12502846/p12502846_b_v8_aa.jpg)
+            input(id='str',type='text',value='',name='url')
       div(class='col-md-1')
         input(type='submit',value='Click to Fit', class='btn btn-primary')
 
