@@ -122,7 +122,9 @@ var mergeImage = function(boxedImg){
             return reject({error: true, msg: err});
           else
             fs.unlink(boxedImg);
-            fs.unlink(tmpImg);
+            if(tmpImg){
+              fs.unlink(tmpImg);
+            }
             return resolve(finalImage);
         });
     }catch (err){
