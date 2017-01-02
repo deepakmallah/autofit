@@ -55,7 +55,7 @@ function getName(str){
       text += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
-    this.name = text;
+    name = text;
     return resolve(str);
   });
 };
@@ -69,7 +69,7 @@ var textInBox = function(str){
   return new Promise(function(resolve, reject){
     if(str){
       try{
-        var fileName = _dir+this.name+'.png';
+        var fileName = _dir+name+'.png';
         var args = [
           '-border','1%x1%',
           '-bordercolor', 'red',
@@ -122,9 +122,6 @@ var mergeImage = function(boxedImg){
             return reject({error: true, msg: err});
           else
             fs.unlink(boxedImg);
-            if(tmpImg){
-              fs.unlink(tmpImg);
-            }
             return resolve(finalImage);
         });
     }catch (err){
@@ -143,11 +140,18 @@ var getImg = function(str, body){
   return new Promise(function(resolve, reject){
     if(body.url){
       var url = body.url;
+
+      var text = "";
+      var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
+      for( var i=0; i < 5; i++ ){
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+
       gm(request(url))
         .resize("800", "420", "!")
-        .write(path.resolve(_dir+"tmp.jpg"), function (err) {
+        .write(path.resolve(_dir+text+"_1.jpg"), function (err) {
           if (!err) console.log('done');
-          tmpImg = path.resolve(_dir+"tmp.jpg");
+          tmpImg = path.resolve(_dir+text+"_1.jpg");
           return resolve(str);
         });
     }else{
