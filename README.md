@@ -1,5 +1,5 @@
 # Best Fit a text in a box using ImageMagick
-Enter any string in the textbox and program will give you an processed image with that string best fitted in the box.
+Enter any string in the textbox and click on _click to fit_ button. Program will give you an processed image with that string best fitted in the box.
 <br /><br />
 Also, Base image can be changed. if we wish change the base image. For that and image url have to be entered in the 2nd textbox. here base image will get pulled from the source and resized to 800 x 420 pixel and processed further to fit the text in the box. <br /> 
 
